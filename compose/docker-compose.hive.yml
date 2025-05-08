@@ -1,0 +1,17 @@
+services:
+  hive-metastore:
+    image: apache/hive:4.0.0
+    restart: unless-stopped
+    environment:
+      SERVICE_NAME: metastore
+      DB_DRIVER: org.postgresql.Driver
+      HIVE_METASTORE_DB_TYPE: postgres
+      HIVE_METASTORE_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_METASTORE_DB}
+      HIVE_METASTORE_DB_USERNAME: ${POSTGRES_METASTORE_USER}
+      HIVE_METASTORE_DB_PASSWORD: ${POSTGRES_METASTORE_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "9083:9083"
+    networks: ["data-net"]

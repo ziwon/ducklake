@@ -1,0 +1,17 @@
+services:
+  nessie:
+    image: ghcr.io/projectnessie/nessie:0.103.6
+    restart: unless-stopped
+    environment:
+      NESSIE_VERSION_STORE_TYPE: JDBC
+      quarkus.datasource.jdbc.url: jdbc:postgresql://postgres:5432/${POSTGRES_NESSIE_DB}
+      quarkus.datasource.username: ${POSTGRES_NESSIE_USER}
+      quarkus.datasource.password: ${POSTGRES_NESSIE_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "19120:19120"
+    volumes:
+      - ./config/nessie/nessie.properties:/app/config/nessie.properties
+    networks: ["data-net"]
